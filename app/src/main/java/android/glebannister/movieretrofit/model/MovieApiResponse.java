@@ -22,6 +22,7 @@ public class MovieApiResponse implements Parcelable
     @SerializedName("results")
     @Expose
     private List<Result> results = null;
+
     public final static Parcelable.Creator<MovieApiResponse> CREATOR = new Creator<MovieApiResponse>() {
 
 
@@ -36,8 +37,7 @@ public class MovieApiResponse implements Parcelable
             return (new MovieApiResponse[size]);
         }
 
-    }
-            ;
+    };
 
     protected MovieApiResponse(Parcel in) {
         this.page = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -45,6 +45,7 @@ public class MovieApiResponse implements Parcelable
         this.totalPages = ((Integer) in.readValue((Integer.class.getClassLoader())));
         in.readList(this.results, (Result.class.getClassLoader()));
     }
+
 
     public MovieApiResponse() {
     }
