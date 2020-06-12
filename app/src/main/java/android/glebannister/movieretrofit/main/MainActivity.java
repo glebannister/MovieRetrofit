@@ -1,11 +1,16 @@
 package android.glebannister.movieretrofit.main;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import android.content.res.Configuration;
 import android.glebannister.movieretrofit.R;
+import android.glebannister.movieretrofit.adapters.MovieAdapter;
 import android.glebannister.movieretrofit.model.MovieApiResponse;
 import android.glebannister.movieretrofit.model.Result;
 import android.glebannister.movieretrofit.service.MovieService;
@@ -22,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(R.string.mainTitle);
         setContentView(R.layout.activity_main);
         getMovies();
     }
@@ -34,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 MovieApiResponse movieApiResponse = response.body();
                 if (movieApiResponse != null){
                     movieArray = (ArrayList<Result>) movieApiResponse.getResults();
+                    buildRecyclerView();
                     for (Result result : movieArray){
                         Log.d("Movies", result.getTitle());
                     }
@@ -46,5 +53,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         return movieArray;
+    }
+
+    private void buildRecyclerView(){
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        MovieAdapter adapter = new MovieAdapter(movieArray, this);
+        int columnCount;
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            columnCount = 2;
+        } else {
+            columnCount = 4;
+        }
+        recyclerView.setLayoutManager(new GridLayoutManager(this, columnCount));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 }
