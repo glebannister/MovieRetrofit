@@ -30,8 +30,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_item, parent,false);
-        MovieAdapterViewHolder movieAdapterViewHolder = new MovieAdapterViewHolder(view);
-        return movieAdapterViewHolder;
+        return new MovieAdapterViewHolder(view);
     }
 
     @SuppressLint("SetTextI18n")
@@ -40,7 +39,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         holder.title.setText(movieArray.get(position).getOriginalTitle());
         holder.popularity.setText(Double.toString(movieArray.get(position).getPopularity()));
         String posterPath = "https://image.tmdb.org/t/p/w500/" + movieArray.get(position).getPosterPath();
-        Glide.with(context).load(posterPath).into(holder.poster);
+        Glide.with(context).load(posterPath).placeholder(R.drawable.original).into(holder.poster);
     }
 
 

@@ -17,7 +17,7 @@
 
     <style name="movieTextStyle" parent="Widget.AppCompat.TextView">
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:singleLine">true</item>
     </style>
 </resources>

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -23,13 +24,23 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Result> movieArray = new ArrayList<>();
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.mainTitle);
         setContentView(R.layout.activity_main);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         getMovies();
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimaryDark);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getMovies();
+            }
+        });
+
     }
     private Object getMovies(){
         MovieService movieService = RetrofitInstance.getMovieService();
@@ -41,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 if (movieApiResponse != null){
                     movieArray = (ArrayList<Result>) movieApiResponse.getResults();
                     buildRecyclerView();
+                    swipeRefreshLayout.setRefreshing(false);
                     for (Result result : movieArray){
                         Log.d("Movies", result.getTitle());
                     }
