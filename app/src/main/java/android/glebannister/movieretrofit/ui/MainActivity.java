@@ -1,4 +1,4 @@
-package android.glebannister.movieretrofit.main;
+package android.glebannister.movieretrofit.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.mainTitle);
+        setTitleColor(R.color.colorPrimaryDark2);
         setContentView(R.layout.activity_main);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         getMovies();
