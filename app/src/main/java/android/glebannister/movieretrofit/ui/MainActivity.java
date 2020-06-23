@@ -1,6 +1,9 @@
 package android.glebannister.movieretrofit.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,23 +19,28 @@ import android.glebannister.movieretrofit.model.MovieApiResponse;
 import android.glebannister.movieretrofit.model.Result;
 import android.glebannister.movieretrofit.service.MovieService;
 import android.glebannister.movieretrofit.service.RetrofitInstance;
+import android.glebannister.movieretrofit.viewmodel.MainActivityViewModel;
 import android.os.Bundle;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Result> movieArray = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
+    private MainActivityViewModel mainActivityViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.mainTitle);
-        setTitleColor(R.color.colorPrimaryDark2);
         setContentView(R.layout.activity_main);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        mainActivityViewModel = new ViewModelProvider
+                .AndroidViewModelFactory(getApplication()).create(MainActivityViewModel.class);
+
         getMovies();
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimaryDark);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -43,29 +51,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-    private Object getMovies(){
-        MovieService movieService = RetrofitInstance.getMovieService();
-        Call<MovieApiResponse> call = movieService.getResults(getString(R.string.api));
-        call.enqueue(new Callback<MovieApiResponse>() {
-            @Override
-            public void onResponse(Call<MovieApiResponse> call, Response<MovieApiResponse> response) {
-                MovieApiResponse movieApiResponse = response.body();
-                if (movieApiResponse != null){
-                    movieArray = (ArrayList<Result>) movieApiResponse.getResults();
-                    buildRecyclerView();
-                    swipeRefreshLayout.setRefreshing(false);
-                    for (Result result : movieArray){
-                        Log.d("Movies", result.getTitle());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MovieApiResponse> call, Throwable t) {
-
-            }
+    private void getMovies(){
+        mainActivityViewModel.getAllMoviesData().observe(this, results -> {
+            movieArray = (ArrayList<Result>) results;
+            buildRecyclerView();
         });
-        return movieArray;
     }
 
     private void buildRecyclerView(){
@@ -81,5 +71,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+        swipeRefreshLayout.setRefreshing(false);
     }
 }
