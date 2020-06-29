@@ -1,3 +1,3 @@
 # MovieRetrofit
 Android app to view a list and information about the latest most popular films 
-with using Retrofit library
+with using Retrofit library and ViewModel
